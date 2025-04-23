@@ -3,8 +3,6 @@ import NewPlantForm from "./NewPlantForm";
 import PlantList from "./PlantList";
 import Search from "./Search";
 
-export const API_ENDPOINT = "https://plantsy-api.onrender.com";
-
 function PlantPage() {
   const [plantData, updatePlantData] = useState([]);
   const [searchQuery, updateSearchQuery] = useState("");
@@ -12,19 +10,14 @@ function PlantPage() {
   useEffect(() => {
     async function retrievePlants() {
       try {
-        const response = await fetch(`${API_ENDPOINT}/plants`, {
-          method: "GET",
-          cache: "no-store"
-        });
-
+        const response = await fetch('/db.json');
         if (!response.ok) {
-          throw new Error("Plant data retrieval failed");
+          throw new Error('Failed to fetch plant data');
         }
-
         const data = await response.json();
-        updatePlantData(data);
+        updatePlantData(data.plants);
       } catch (err) {
-        console.error("Error loading plants:", err);
+        console.error('Error loading plants:', err);
       }
     }
 

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { API_ENDPOINT } from "./PlantPage";
 
 function NewPlantForm({ setPlants }) {
   const [plantName, updateName] = useState("");
@@ -8,28 +7,22 @@ function NewPlantForm({ setPlants }) {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const plantToAdd = { plantName, plantImage, plantPrice };
-    
-    fetch(`${API_ENDPOINT}/plants`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(plantToAdd),
-    })
-    .then(() => {
-      updateName("");
-      updateImage("");
-      updatePrice("");
-      
-      // Refresh plant list if parent component provides the setter
-      if (setPlants) {
-        return fetch(`${API_ENDPOINT}/plants`)
-          .then(res => res.json())
-          .then(data => setPlants(data));
-      }
-    })
-    .catch(error => console.error("Error submitting plant:", error));
+    const newPlant = { name: plantName, image: plantImage, price: parseFloat(plantPrice) };
+
+    // Simulate adding the new plant to the local data
+    if (setPlants) {
+      fetch('/db.json')
+        .then(response => response.json())
+        .then(data => {
+          const updatedPlants = [...data.plants, newPlant];
+          // In a real app, you would update the db.json file here
+          // For this example, we'll just update the state
+          setPlants(updatedPlants);
+          updateName("");
+          updateImage("");
+          updatePrice("");
+        });
+    }
   };
 
   return (
